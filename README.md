@@ -1,36 +1,177 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## Add .env File
 
-## Getting Started
+```
+MONGODB_URI=mongodb://mongodb:27017 # It remain same
 
-First, run the development server:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Mialtrap
+
+MAILTRAP_SMTP_HOST=
+MAILTRAP_SMTP_PORT=
+MAILTRAP_SMTP_USER=
+MAILTRAP_SMTP_PASS=
+
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Run only nextjs project
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+docker build -t payever .
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+docker run -p 3000:3000 payever
 
-## Learn More
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Run MongodDb and Nextjs project
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+docker-compose up --build
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## Api Docs
 
-## Deploy on Vercel
+### Get User
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+http://localhost:3000/api/users?userId=1
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+```
+
+#### Response
+
+```
+{
+    "success": true,
+    "statusCode": 200,
+    "message": "User details fetched successfully",
+    "messages": {
+        "data": {
+            "id": 1,
+            "email": "george.bluth@reqres.in",
+            "first_name": "George",
+            "last_name": "Bluth",
+            "avatar": "https://reqres.in/img/faces/1-image.jpg"
+        },
+        "support": {
+            "url": "https://reqres.in/#support-heading",
+            "text": "To keep ReqRes free, contributions towards server costs are appreciated!"
+        }
+    }
+}
+```
+
+```
+http://localhost:3000/api/users?userId=133
+```
+
+#### Response
+
+```
+{
+    "success": false,
+    "statusCode": 400,
+    "message": "User not found"
+}
+```
+
+### POST Create User
+
+```
+http://localhost:3000/api/users
+
+{
+    "username":"Bob",
+    "email":"bob@gmail.com",
+    "password":"123123",
+    "avatar":"https://reqres.in/img/faces/1-image.jpg"
+}
+```
+
+#### Response
+
+```
+{
+    "success": true,
+    "statusCode": 200,
+    "message": "User created successfully",
+    "messages": [
+        {
+            "userId": "fe97654a-1cc7-4be9-866e-b3e8a0e974d5",
+            "username": "bob",
+            "email": "bob@gmail.com",
+            "avatar": "123123"
+        }
+    ]
+}
+
+```
+
+### Get User avatar
+
+```
+http://localhost:3000/api/users/3/avatar
+```
+
+#### Response
+
+```
+{
+    "success": true,
+    "statusCode": 200,
+    "message": "Avatar fetched and saved successfully",
+    "messages": [
+        {
+            "image": "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"
+        }
+    ]
+}
+```
+
+```
+http://localhost:3000/api/users/3/avatar
+```
+
+#### Response
+
+```
+{
+    "success": true,
+    "statusCode": 200,
+    "message": "Avatar fetched successfully",
+    "messages": [
+        {
+            "image": "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"
+        }
+    ]
+}
+```
+
+### Delete Avatar
+
+```
+http://localhost:3000/api/users/3/avatar
+```
+
+#### Response
+
+```
+{
+    "success": true,
+    "statusCode": 200,
+    "message": "Avatar and User deleted successfully"
+}
+```
+
+```
+http://localhost:3000/api/users/3/avatar
+```
+
+#### Response
+
+```
+{
+    "success": false,
+    "statusCode": 404,
+    "message": "Avatar not found"
+}
+```

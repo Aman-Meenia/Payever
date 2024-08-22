@@ -1,0 +1,26 @@
+services:
+  mongodb:
+    container_name: mongodbPayever
+    image: mongo:latest
+    restart: always
+    volumes:
+      - mongodb_data:/data/db
+    ports:
+      - 27017:27017
+
+  nextjs:
+    container_name: payever
+    build: .
+    restart: always
+    ports:
+      - 3000:3000
+    depends_on:
+      - mongodb
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+      - /app/node_modules
+
+volumes:
+  mongodb_data:
