@@ -15,6 +15,12 @@ MAILTRAP_SMTP_PASS=
 
 ## Run only nextjs project
 
+## No need of npm install but for safety run it
+
+```
+npm install
+```
+
 ```
 docker build -t payever .
 
